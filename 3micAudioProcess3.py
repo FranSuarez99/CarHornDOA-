@@ -24,7 +24,7 @@ n = 8
 data1, data2, data3 = [], [], []
 sync1, sync2, sync3 = False, False, False
 syncP1, syncP2, syncP3 = False, False, False
-
+time1, time2, time3 = 0, 0, 0
 #start streams
 p=pyaudio.PyAudio()
 stream1=p.open(format=pyaudio.paInt16,channels=1,rate=RATE,input=True,input_device_index=1,
@@ -34,12 +34,16 @@ stream2=p.open(format=pyaudio.paInt16,channels=1,rate=RATE,input=True,input_devi
 stream3=p.open(format=pyaudio.paInt16,channels=1,rate=RATE,input=True,input_device_index=3,
                 frames_per_buffer=CHUNK)
 def audioFunc1():
-    global data1, syncP1, sync1, stream1
+    global data1, syncP1, sync1, stream1, time1
     print("audioFunc1")
     for i in range(500):
         #print("audio1",i)
+        t1 = time.time()
         data1 = np.frombuffer(stream1.read(CHUNK, exception_on_overflow = False),dtype=np.int16)
         if len(data1) != 0:
+            maxIndex1 = data1.index(max(data1))
+            time1 = (1/4/1024)*maxIndex1
+            time1 = time1+t1
             syncP1 = True
             sync1 = True
         while syncP1:
@@ -50,12 +54,16 @@ def audioFunc1():
     p.terminate()
 
 def audioFunc2():
-    global data2, syncP2, sync2, stream2
+    global data2, syncP2, sync2, stream2, time2
     print("audioFunc2")
     for i in range(500):
         #print("audio2",i)
+        t2 = time.time()
         data2 = np.frombuffer(stream2.read(CHUNK, exception_on_overflow = False),dtype=np.int16)
         if len(data2) != 0:
+            maxIndex1 = data1.index(max(data1))
+            time2 = (1/4/1024)*maxIndex1
+            time2 = time2+t2
             syncP2 = True
             sync2 = True
         while syncP2:
@@ -66,12 +74,16 @@ def audioFunc2():
     p.terminate()
 
 def audioFunc3():
-    global data3, syncP3, sync3, stream3
+    global data3, syncP3, sync3, stream3, time3
     print("audioFunc3")
     for i in range(500):
         #print("audio3",i)
+        t3 = time.time()
         data3 = np.frombuffer(stream3.read(CHUNK, exception_on_overflow = False),dtype=np.int16)
         if len(data3) != 0:
+            maxIndex1 = data1.index(max(data1))
+            time3 = (1/4/1024)*maxIndex1
+            time3 = time3+t3
             syncP3 = True
             sync3 = True
         while syncP3:
@@ -82,6 +94,7 @@ def audioFunc3():
     p.terminate()
 
 def DOA(t1, t2, t3):
+    ans = None
     times = [t1, t2, t3]
     if len(set(times)) != len(times):
         if t1 == t2:
@@ -112,9 +125,6 @@ def DOA(t1, t2, t3):
         ans = 90-angle
     else:
         ans = -90-angle
-    ans = None
-    
-
     return ans
 
 def processing():
