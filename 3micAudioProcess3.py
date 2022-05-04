@@ -1,3 +1,4 @@
+from cmath import sqrt
 import pyaudio
 import numpy as np
 import matplotlib.pyplot as plt
@@ -80,28 +81,41 @@ def audioFunc3():
     stream3.close()
     p.terminate()
 
-def DOA(d1, d2, d3, f):
-    X1 = abs(np.fft.fft(d1).real)
-    X2 = abs(np.fft.fft(d2).real)
-    X3 = abs(np.fft.fft(d3).real)
-
-    print("conj")
-    print(np.angle(X1*np.conj(X2)))
-    print(np.angle(X2*np.conj(X3)))
+def DOA(t1, t2, t3):
+    times = [t1, t2, t3]
+    if len(set(times)) != len(times):
+        if t1 == t2:
+            if t3 < t1:
+                ans = 330
+            else:
+                ans = 150
+        else:
+            if t1 == t3:
+                if t2 < t1:
+                    ans = 200
+                else:
+                    ans = 30
+            else:
+                if t1 < t2:
+                    ans = 90
+                else:
+                    ans = 270
+    micPairs = [t1-t2, t1-t3, t2-t3]
+    tau = min((abs(x), x) for x in micPairs)
+    ABp = (tau * soundSpeed)^2
+    x = sqrt(-(ABp*(ABp-4*(micDist^2)))/(4*(4*(micDist^2)-ABp)))
+    y1 = sqrt((ABp/4)-(micDist^2)+((x^2)*((4*(micDist^2))/(ABp)-1)))
+    y2 = -y1
+    m = y1/x
+    angle = np.arctan(m)
+    if angle >= 0:
+        ans = 90-angle
+    else:
+        ans = -90-angle
+    ans = None
     
 
-    ph_diff_12 = np.angle(X1*np.conj(X2))
-    ph_diff_23 = np.angle(X2*np.conj(X3))
-
-    tdoa_12 = ph_diff_12/(2*np.pi*f)
-    tdoa_23 = ph_diff_23/(2*np.pi*f)
-
-    weight = abs(X2)
-    weight = weight/sum(weight)
-    mean_tdoa_12 = sum(tdoa_12*weight)
-    mean_tdoa_23 = sum(tdoa_23*weight)
-
-    return [mean_tdoa_12, mean_tdoa_23]
+    return ans
 
 def processing():
     global data1, data2, data3, syncP1, syncP2, syncP3, sync1, sync2, sync3
