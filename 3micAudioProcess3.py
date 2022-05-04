@@ -93,7 +93,8 @@ def audioFunc3():
     stream3.close()
     p.terminate()
 
-def DOA(t1, t2, t3):
+def DOA():
+    t1, t2, t3 = time1, time2, time3
     ans = None
     times = [t1, t2, t3]
     if len(set(times)) != len(times):
@@ -151,7 +152,7 @@ def processing():
                 carSpeedKM = carSpeed*(3.6)#turns m/s to km/h
                 #print("CARSPEED")
                 #print(carSpeedKM)#this will be a parameter that affects the tipe of haptic feedback the user recives
-                ans = DOA(data1,data2,data3,freqPeak)
+                ans = DOA()
                 print(ans)
             else:
                 hornTime = 0#if thre is no horn even for a moment, the timer is set to 0 again
