@@ -3,6 +3,7 @@ import pyaudio
 import numpy as np
 import matplotlib.pyplot as plt
 import time
+import math
 import threading
 from threading import Thread
 #import sounddevice as sd
@@ -41,7 +42,7 @@ def audioFunc1():
         t1 = time.time()
         data1 = np.frombuffer(stream1.read(CHUNK, exception_on_overflow = False),dtype=np.int16)
         if len(data1) != 0:
-            maxIndex1 = data1.index(max(data1))
+            maxIndex1 = np.argmax(data1)
             time1 = (1/4/1024)*maxIndex1
             time1 = time1+t1
             syncP1 = True
@@ -61,8 +62,8 @@ def audioFunc2():
         t2 = time.time()
         data2 = np.frombuffer(stream2.read(CHUNK, exception_on_overflow = False),dtype=np.int16)
         if len(data2) != 0:
-            maxIndex1 = data1.index(max(data1))
-            time2 = (1/4/1024)*maxIndex1
+            maxIndex2 = np.argmax(data2)
+            time2 = (1/4/1024)*maxIndex2
             time2 = time2+t2
             syncP2 = True
             sync2 = True
@@ -81,8 +82,8 @@ def audioFunc3():
         t3 = time.time()
         data3 = np.frombuffer(stream3.read(CHUNK, exception_on_overflow = False),dtype=np.int16)
         if len(data3) != 0:
-            maxIndex1 = data1.index(max(data1))
-            time3 = (1/4/1024)*maxIndex1
+            maxIndex3 = np.argmax(data3)
+            time3 = (1/4/1024)*maxIndex3
             time3 = time3+t3
             syncP3 = True
             sync3 = True
@@ -114,11 +115,11 @@ def DOA():
                     ans = 90
                 else:
                     ans = 270
-    micPairs = [t1-t2, t1-t3, t2-t3]
-    tau = min((abs(x), x) for x in micPairs)
-    ABp = (tau * soundSpeed)^2
-    x = sqrt(-(ABp*(ABp-4*(micDist^2)))/(4*(4*(micDist^2)-ABp)))
-    y1 = sqrt((ABp/4)-(micDist^2)+((x^2)*((4*(micDist^2))/(ABp)-1)))
+    micPairs = [abs(t1-t2), abs(t1-t3), abs(t2-t3)]
+    tau = float(min(micPairs))
+    ABp = (tau * soundSpeed)**2.0
+    x = math.sqrt(-(ABp*(ABp-4.0*(micDist**2.0)))/(4.0*(4.0*(micDist**2.0)-ABp)))
+    y1 = math.sqrt((ABp/4.0)-(micDist**2.0)+((x**2.0)*((4.0*(micDist**2.0))/(ABp)-1.0)))
     y2 = -y1
     m = y1/x
     angle = np.arctan(m)
