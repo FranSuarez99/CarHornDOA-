@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time
 import math
-import threading
+#import threading
 from threading import Thread
 #import sounddevice as sd
 #print(sd.query_devices())#print all soud devices, the index will be used on the stream
