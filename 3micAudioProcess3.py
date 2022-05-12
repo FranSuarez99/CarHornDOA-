@@ -19,7 +19,7 @@ CHUNK = 12000
 RATE = 48000
 
 soundSpeed = 343.2
-micDist = 0.33
+micDist = 0.33/2
 maxDOA = micDist / float(soundSpeed)
 hornFreq = 420
 hornTime = 0
@@ -71,7 +71,7 @@ def audioFunc2():
     p.terminate()
 
 def audioFunc3():
-    global data3, syncP3, sync3, stream3
+    global data3, syncP3, sync3, stream3, time3
     print("audioFunc3")
     for i in range(500):
         #print("audio3",i)
@@ -111,15 +111,16 @@ def DOA(t1, t2, t3):
     micPairs = [abs(t1-t2), abs(t1-t3), abs(t2-t3)]
     tau = float(min(micPairs))
     ABp = (tau * soundSpeed)**2.0
-    x = math.sqrt(-(ABp*(ABp-4.0*(micDist**2.0)))/(4.0*(4.0*(micDist**2.0)-ABp)))
+    #x = math.sqrt(-(ABp*(ABp-4.0*(micDist**2.0)))/(4.0*(4.0*(micDist**2.0)-ABp)))
+    x = 1
     y1 = math.sqrt((ABp/4.0)-(micDist**2.0)+((x**2.0)*((4.0*(micDist**2.0))/(ABp)-1.0)))
     y2 = -y1
     m = y1/x
     angle = np.arctan(m)
     if angle >= 0:
-        ans = 90-angle
+        ans = 90-np.degrees(angle)
     else:
-        ans = -90-angle
+        ans = -90-np.degrees(angle)
     return ans
 
 def auxProcessing(data):
@@ -131,7 +132,7 @@ def auxProcessing(data):
     #print("peak frequency: %d Hz"%freqPeak)#peak frequency of the whole fft
     if (freqPeak<450)and(freqPeak>390):#its the peak freuqncy in a horn range?
         hornTimer = True
-        if hornTime > n:#have the horn been the peak frquency for the last n CHUNK/RATE seconds? 
+        if hornTime > n and hornTimer:#have the horn been the peak frquency for the last n CHUNK/RATE seconds? 
             print("Long Horn")#this will be an extra haptic output so the user knows 
         carSpeed = -(((soundSpeed*hornFreq)/freqPeak)-soundSpeed)#relative speed of the horn source and the observer in m/s
         carSpeedKM = carSpeed*(3.6)#turns m/s to km/h
@@ -169,7 +170,7 @@ def processing():
                 maxIndex3 = np.argmax(newData3)
                 timer3 = (1/4/1024)*maxIndex3
                 timer3 += time3
-            
+
             angle = DOA(timer1, timer2, timer3)
 
             syncP1 = False
