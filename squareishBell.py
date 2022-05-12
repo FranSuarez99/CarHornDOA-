@@ -33,7 +33,7 @@ for i in range(1024):#puts the tukey window on the 1024 array, with the rectangu
             tukeyW[i] -= 0.1
         j += 1
 
-
+print(tukeyW)
 plt.title("tukey")
 plt.plot(tukeyWx, tukeyW, color="red")
 plt.show()
