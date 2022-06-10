@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import time
 import sounddevice as sd
 print(sd.query_devices())#print all soud devices, the index will be used on the stream
-"""
+
 soundSpeed = 343
 hornFreq = 420
 hornTime = 0
@@ -20,7 +20,7 @@ RATE = 4096 # time resolution of the recording device (Hz)
 #RATE = CHUNK
 
 p=pyaudio.PyAudio() # start the PyAudio class
-stream=p.open(format=pyaudio.paInt16,channels=1,rate=RATE,input=True,input_device_index=6,
+stream=p.open(format=pyaudio.paInt16,channels=1,rate=RATE,input=True,input_device_index=1,
               frames_per_buffer=CHUNK) #input_device_index needs to be the same as the mic
 
 # create a numpy array holding a single read of audio data
@@ -57,4 +57,3 @@ plt.show()
 stream.stop_stream()
 stream.close()
 p.terminate()
-"""
