@@ -100,7 +100,7 @@ def DOA(t1, t2, t3):
         else:
             if t1 == t3:
                 if t2 < t1:
-                    ans = 200
+                    ans = 210
                 else:
                     ans = 30
             else:
