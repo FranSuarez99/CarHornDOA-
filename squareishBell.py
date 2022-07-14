@@ -24,9 +24,9 @@ tukeyArrX = range(int(-len(tukeyArr)/2)+420, int(len(tukeyArr)/2)+420)
 #plt.show()
 
 j = 0
-tukeyW = [0]*1024
-tukeyWx = range(1024)
-for i in range(1024):#puts the tukey window on the 1024 array, with the rectangular part from 400 to 440
+tukeyW = [0]*10000
+tukeyWx = range(10000)
+for i in range(10000):#puts the tukey window on the 1024 array, with the rectangular part from 400 to 440
     if i >= 380 and i <= 459:
         tukeyW[i] = tukeyW[i]+tukeyArr[j]
         if tukeyW[i] > 1:
